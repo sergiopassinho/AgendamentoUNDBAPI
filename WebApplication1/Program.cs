@@ -47,10 +47,13 @@ app.MapPost("/autenticar", async (HttpContext context) =>
 
         var credencial = JsonConvert.DeserializeObject<Credencial>(requestBody);
 
-        Autenticar autenticar = new();
+        if (credencial == null)
+            return context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
-        bool autenticado = autenticar.AutenticarUsuario(credencial ?? new Credencial { Usuario = "", Senha = "" });
+        Autenticar autenticador = new BasicAutenticacao();
 
+        bool autenticado = autenticador.AutenticarUsuario(credencial);
+       
         if (autenticado)
             return context.Response.StatusCode = (int)HttpStatusCode.OK;
             
